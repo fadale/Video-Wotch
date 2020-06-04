@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row text-left">
     @foreach($videos as $video)
         <div class="col-lg-4">
             @include('frontend.shared.video-card')

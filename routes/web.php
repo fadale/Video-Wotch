@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('frontend.landing');
+
 
 Route::namespace('BackEnd')->prefix('admin')->middleware('admin')->group(function(){
     Route::get('/','Home@index')->name('admin.home');
@@ -44,6 +42,8 @@ Route::get('skill/{id}', 'HomeController@skill')->name('front.skill');
 Route::get('tag/{id}', 'HomeController@tags')->name('front.tags');
 Route::get('video/{id}', 'HomeController@video')->name('frontend.video');
 Route::get('contact-us', 'HomeController@messageStore')->name('contact.store');
+Route::get('/','HomeController@welcome')->name('frontend.landing');
+Route::get('page/{id}/{slug?}','HomeController@page')->name('front.page');
 Route::middleware('auth')->group(function() {
     Route::post('comments/{id}', 'HomeController@commentUpdate')->name('front.commentUpdate');
     Route::post('comments/{id}/create', 'HomeController@commentStore')->name('front.commentStore');

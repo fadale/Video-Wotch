@@ -47,7 +47,7 @@
         </li>
         <li class="nav-item {{is_active('messages')}}">
             <a href="{{route('messages.index')}}" class="nav-link">
-                <i class="material-icons">content_paste</i>
+               
                 <p>Messages</p>
             </a>
         </li>

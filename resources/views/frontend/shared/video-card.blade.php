@@ -4,6 +4,7 @@
          <a href="{{route('frontend.video',['id'=>$video->id])}}" title="{{$video->name}}">
 
         <p class="card-text">{{$video->name}}</p>
+             <span>{{$video->created_at}}</span>
          </a>
     </div>
 </div>

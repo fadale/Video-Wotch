@@ -24,6 +24,9 @@
         <div class="container">
             <div class="title">
                 <h2>Latest Videos</h2>
+                @if(request()->has('search')&& request()->get('search')!='')
+                    you are search on <b>{{request()->get('search')}}</b> | <a href="{{route('home')}}">Reset</a>
+                    @endif
             </div>
             @include('frontend.shared.video-row')
     </div>

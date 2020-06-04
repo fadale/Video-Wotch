@@ -2,7 +2,13 @@
     <div class="container">
         <div class="row">
             <nav class="footer-nav">
-
+                <ul>
+                    @foreach($pages as $page)
+                    <li>
+                        <a href="{{route('front.page',[$page->id,'slug'=>trim(str_replace(' ','_',$page->name))])}}">{{$page->name}}</a>
+                    </li>
+                        @endforeach
+                </ul>
             </nav>
             <div class="credits ml-auto">
             <span class="copyright">

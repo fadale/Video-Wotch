@@ -7,7 +7,9 @@ use App\Http\Requests\FrontEnd\Messages\Store;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Message;
+use App\Models\Page;
 use App\Models\Skill;
+use App\Models\Tag;
 use App\Models\Video;
 
 
@@ -20,7 +22,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->only('index','commentUpdate','commentStore');
+        $this->middleware('auth')->only('commentUpdate','commentStore');
     }
 
     /**
@@ -30,7 +32,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $videos = Video::orderBy('id','desc')->paginate(30);
+        $videos = Video::orderBy('id','desc');
+        if(request()->has('search')&&request()->get('search')!=''){
+            $videos = $videos->where('name','like','%'.request()->get('search').'%');
+        }
+        $videos = $videos->paginate(30);
         return view('home',compact('videos'));
     }
     public function category($id)
@@ -85,6 +91,17 @@ class HomeController extends Controller
         Message::create($request->all());
 
         return redirect()->route('frontend.landing');
+    }
+    public function welcome(){
+        $videos = Video::orderBy('id','desc')->paginate(9);
+        $videos_count = Video::count();
+        $comments_count=Comment::count();
+        $tags_count=Tag::count();
+        return view('welcome',compact('videos','videos_count','comments_count','tags_count'));
+    }
+    public  function  page($id,$slug=null){
+        $page = Page::findOrFail($id);
+        return view('frontend.page.index',compact('page'));
     }
 
 }
