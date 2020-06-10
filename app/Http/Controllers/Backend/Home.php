@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\BackEnd;
-
+use App\Models\Comment;
 use App\User;
 
 class Home extends BackEndController
@@ -11,6 +11,9 @@ class Home extends BackEndController
         parent::__construct($model);
     }
     public function index(){
-        return view('backend.home');
+        $comments = Comment::with('user','video')->orderBy('id','desc')->paginate(10);
+
+
+        return view('backend.home',compact('comments'));
     }
 }

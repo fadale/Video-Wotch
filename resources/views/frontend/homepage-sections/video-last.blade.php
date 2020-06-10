@@ -10,9 +10,10 @@
         </div>
         <br>
         <br>
-
+            @if(empty($videos))
             @include('frontend.shared.video-row')
 
         <a href="{{route('home')}}" class="btn btn-danger btn-round">See All</a>
+                @endif
     </div>
 </div>

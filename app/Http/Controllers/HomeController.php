@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Requests\FrontEnd\Messages\Store;
+
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Message;
 use App\Models\Page;
 use App\Models\Skill;
 use App\Models\Tag;
+use App\Models\User;
 use App\Models\Video;
+
 
 
 class HomeController extends Controller
@@ -22,7 +25,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->only('commentUpdate','commentStore');
+        $this->middleware('auth')->only('commentUpdate','commentStore','profileUpdate');
     }
 
     /**
@@ -32,7 +35,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $videos = Video::orderBy('id','desc');
+        $videos = Video::published()->orderBy('id','desc');
         if(request()->has('search')&&request()->get('search')!=''){
             $videos = $videos->where('name','like','%'.request()->get('search').'%');
         }
@@ -42,19 +45,19 @@ class HomeController extends Controller
     public function category($id)
     {
         $cat= Category::findOrFail($id);
-        $videos = Video::where('cat_id',$id)->orderBy('id','desc')->paginate(30);
+        $videos = Video::published()->where('cat_id',$id)->orderBy('id','desc')->paginate(30);
         return view('frontend.category.index',compact('videos','cat'));
     }
     public function video($id)
     {
-        $video= Video::with('skills','tags','cat','user','comments.user')->findOrFail($id);
+        $video= Video::published()->with('skills','tags','cat','user','comments.user')->findOrFail($id);
         return view('frontend.video.index',compact('video'));
     }
 
     public function skill($id)
     {
         $skill= Skill::findOrFail($id);
-        $videos = Video::whereHas('skills',function($query)use($id){
+        $videos = Video::published()->whereHas('skills',function($query)use($id){
             $query->where('skill_id',$id);
         })->orderBy('id','desc')->paginate(30);
         return view('frontend.skill.index',compact('videos','skill'));
@@ -62,7 +65,7 @@ class HomeController extends Controller
     public function tags($id)
     {
         $tag= Skill::findOrFail($id);
-        $videos = Video::whereHas('tags',function($query)use($id){
+        $videos = Video::published()->whereHas('tags',function($query)use($id){
             $query->where('tag_id',$id);
         })->orderBy('id','desc')->paginate(30);
         return view('frontend.tag.index',compact('videos','tag'));
@@ -77,7 +80,7 @@ class HomeController extends Controller
             return redirect()->route('frontend.video',['id'=>$comment->video_id,'#comment']);
     }
     public function commentStore($id,Store $request){
-        $video=Video::findOrFail($id);
+        $video=Video::published()->findOrFail($id);
         Comment::create([
             'user_id'=>auth()->user()->id,
             'video_id'=>$video->id,
@@ -89,12 +92,12 @@ class HomeController extends Controller
     public function messageStore(Store $request)
     {
         Message::create($request->all());
-
+        alert()->message('You Message have been saved ,we will can you in 24 hour')->autoclose(2000);
         return redirect()->route('frontend.landing');
     }
     public function welcome(){
-        $videos = Video::orderBy('id','desc')->paginate(9);
-        $videos_count = Video::count();
+        $videos = Video::published()->orderBy('id','desc')->paginate(9);
+        $videos_count = Video::published()->count();
         $comments_count=Comment::count();
         $tags_count=Tag::count();
         return view('welcome',compact('videos','videos_count','comments_count','tags_count'));
@@ -103,5 +106,35 @@ class HomeController extends Controller
         $page = Page::findOrFail($id);
         return view('frontend.page.index',compact('page'));
     }
+    public  function  profile($id,$slug=null){
+        $user = User::findOrFail($id);
+        return view('frontend.profile.index',compact('user'));
+    }
+
+    public function profileUpdate(\App\Http\Requests\FrontEnd\Users\Store $request){
+        $user=User::findOrFail(auth()->user()->id);
+        $arry=[];
+        if($request->email != $user->email){
+            $email = User::where('email',$request->email)->first();
+            if ($email == null){
+                $arry['email']=$request->email;
+            }
+        }
+        if($request->name != $user->name){
+            $email = User::where('name',$request->name);
+                $arry['name']=$request->name;
+        }
+        if($request->password != ''){
+
+            $arry['password']=$request->password;
+        }
+        if (!empty($arry)){
+            $user->update($arry);
+        }
+        alert()->message('You Profile have been saved')->autoclose(2000);
+        return redirect()->route('front.profile',[$user->id,slug($user->name)]);
+
+    }
+
 
 }

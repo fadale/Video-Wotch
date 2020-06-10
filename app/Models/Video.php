@@ -38,4 +38,7 @@ class Video extends Model
     {
         return $this->hasMany(Comment::class);
     }
+    public function scopePublished(){
+        return $this->where('published',1);
+    }
 }

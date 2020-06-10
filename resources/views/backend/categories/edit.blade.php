@@ -20,7 +20,7 @@
           <form action="{{route($routeName.'.update',[$row->id])}}" method="POST">
             {{ method_field('PUT') }}
            @include('backend.'.$folderName.'.form')
-            <button type="submit" class="btn btn-primary pull-right">Add {{$smodelName}}</button>
+            <button type="submit" class="btn btn-primary pull-right">Update {{$modelName}}</button>
             <div class="clearfix"></div>
           </form>
         </div>

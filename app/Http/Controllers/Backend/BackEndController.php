@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Comment;
+use App\Models\Video;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 class BackEndController extends Controller
@@ -66,6 +68,11 @@ class BackEndController extends Controller
     }
     public function destroy($id){
          $this->model->findOrFail($id)->delete();
+        $modelName=$this->getModelName();
+        if($modelName == 'Video'){
+            $requesat = Comment::where('video_id',$id);
+                $requesat->delete();
+        }
         return redirect()->route($this->getClassNameFromModel().'.index');
     }
     protected function filter($rows){

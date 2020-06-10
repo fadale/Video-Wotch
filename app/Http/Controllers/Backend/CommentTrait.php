@@ -9,14 +9,14 @@ trait  CommentTrait{
     public function commentStore(store $request){
 
         $requestArray=$request->all()+['user_id'=>auth()->user()->id];
-        Comments::create($requestArray);
+        Comment::create($requestArray);
 
         return redirect()->route('videos.edit',['id'=>$requestArray['video_id'],'#comments']);
 
     }
     public function commentDelete($id){
 
-        $request=Comments::FindOrFail($id);
+        $request=Comment::findOrFail($id);
         $request->delete();
 
         return redirect()->route('videos.edit',['id'=>$request->video_id,'#comments']);
@@ -24,7 +24,7 @@ trait  CommentTrait{
     }
     public function commentUpdate($id,Store $request){
 
-        $row=Comments::FindOrFail($id);
+        $row=Comment::findOrFail($id);
         $row->update($request->all());
         return redirect()->route('videos.edit',['id'=>$row->video_id,'#comments']);
 

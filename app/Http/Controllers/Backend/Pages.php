@@ -26,7 +26,7 @@ class Pages extends BackEndController
     }
 
     public function update($id,Store $request){
-        $rows= $this->model->FindOrFail($id);
+        $rows= $this->model->findOrFail($id);
 
         $rows->update($request->all());
 

@@ -6,6 +6,8 @@
     <link rel="apple-touch-icon" sizes="76x76" href="/frontend/img//apple-icon.png">
     <link rel="icon" type="image/png" href="/frontend/img//favicon.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="description" content="@yield('meta_des')">
+    <meta name="keywords" content="@yield('meta_keywords')">
     <title>
        AWSAAL | @yield('title')
     </title>
@@ -72,6 +74,8 @@
             }
         });
     </script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+@include('sweet::alert')
 </body>
 
 </html>
