@@ -6,7 +6,7 @@ use App\Models\Comment;
 
 trait  CommentTrait{
 
-    public function commentStore(store $request){
+    public function commentStore(Store $request){
 
         $requestArray=$request->all()+['user_id'=>auth()->user()->id];
         Comment::create($requestArray);

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::namespace('BackEnd')->prefix('admin')->middleware('admin')->group(function(){
     Route::get('/','Home@index')->name('admin.home');
-
+    Route::get('/home','Home@frontHome')->name('front.home');
     Route::resource('users', 'Users')->except(['show']);
     Route::resource('categories', 'Categories')->except(['show']);
     Route::resource('skills', 'Skills')->except(['show']);
@@ -28,6 +28,7 @@ Route::namespace('BackEnd')->prefix('admin')->middleware('admin')->group(functio
     Route::post('comments', 'Videos@commentStore')->name('comment.store');
     Route::get('comments/{id}', 'Videos@commentDelete')->name('comment.delete');
     Route::post('comments/{id}', 'Videos@commentUpdate')->name('comment.update');
+
 
 });
 
@@ -46,7 +47,12 @@ Route::get('/','HomeController@welcome')->name('frontend.landing');
 Route::get('page/{id}/{slug?}','HomeController@page')->name('front.page');
 Route::get('profile/{id}/{slug?}','HomeController@profile')->name('front.profile');
 Route::middleware('auth')->group(function() {
+    Route::prefix('admin')->get('/','BackEnd\Home@index')->name('admin.home');
     Route::post('comments/{id}', 'HomeController@commentUpdate')->name('front.commentUpdate');
     Route::post('comments/{id}/create', 'HomeController@commentStore')->name('front.commentStore');
     Route::post('profile', 'HomeController@profileUpdate')->name('profile.update');
+    Route::get('/upload/{id}','HomeController@createUpload')->name('front.uploadVideo');
+    Route::post('/upload','HomeController@uploadStore')->name('frontVideo.store');
+    Route::get('/upload/{id}/edit','HomeController@videoUploadEdit')->name('video-upload.edit');
+    Route::post('/upload/{id}/delete','HomeController@videoUploadDelete')->name('video-upload.destroy');
 });

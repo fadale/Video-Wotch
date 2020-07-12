@@ -29,6 +29,7 @@
                             </th>
                         </tr></thead>
                         <tbody>
+                        @if(!empty($comments))
                         @foreach($comments as $comment)
                         <tr>
                             <td>
@@ -58,9 +59,11 @@
                             </td>
                         </tr>
                             @endforeach
+
                         </tbody>
                     </table>
                     {!! $comments->links() !!}
+                    @endif
                 </div>
             </div>
         </div>

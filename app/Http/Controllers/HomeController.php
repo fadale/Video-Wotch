@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FrontEnd\Messages\Store;
 
+use App\Http\Requests\FrontEnd\Videos\Update;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Message;
@@ -13,6 +14,7 @@ use App\Models\Skill;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\Video;
+use Illuminate\Support\Str;
 
 
 
@@ -39,7 +41,7 @@ class HomeController extends Controller
         if(request()->has('search')&&request()->get('search')!=''){
             $videos = $videos->where('name','like','%'.request()->get('search').'%');
         }
-        $videos = $videos->paginate(30);
+        $videos = $videos->paginate(20);
         return view('home',compact('videos'));
     }
     public function category($id)
@@ -79,7 +81,7 @@ class HomeController extends Controller
 
             return redirect()->route('frontend.video',['id'=>$comment->video_id,'#comment']);
     }
-    public function commentStore($id,Store $request){
+    public function commentStore($id,\App\Http\Requests\FrontEnd\Comments\Store $request){
         $video=Video::published()->findOrFail($id);
         Comment::create([
             'user_id'=>auth()->user()->id,
@@ -108,12 +110,21 @@ class HomeController extends Controller
     }
     public  function  profile($id,$slug=null){
         $user = User::findOrFail($id);
-        return view('frontend.profile.index',compact('user'));
+        $videos = Video::all()->where('user_id',$id);
+        return view('frontend.profile.index',compact('user','videos'));
     }
 
     public function profileUpdate(\App\Http\Requests\FrontEnd\Users\Store $request){
+        dd($request->file('image'));
         $user=User::findOrFail(auth()->user()->id);
         $arry=[];
+
+        $file=$request->file('image');
+        $fileName=time().Str::random('10').'.'.$file->getClientOriginalExtension();
+        $file->move(public_path('uploads'),$fileName);
+        $requestArray=['user_id'=>auth()->user()->id,'image'=>$fileName]+$request->all();
+        $arry['image']=$requestArray;
+
         if($request->email != $user->email){
             $email = User::where('email',$request->email)->first();
             if ($email == null){
@@ -136,5 +147,60 @@ class HomeController extends Controller
 
     }
 
+    protected function append()
+    {
+        $array= ['categories'=>Category::get(),
+            'skills'=>Skill::get(),
+            'tags'=>Tag::get(),
+            'selectedSkills'=>[],
+            'selectedTags'=>[],
+            'comments'=>[]
+        ];
+        if(request()->route()->parameter('video')){
+            $array['selectedSkills'] = $this->model->find(request()->route()->parameter('video'))->
+            skills()->get()->pluck('id')->toArray();
+        }
+        if(request()->route()->parameter('video')){
+            $array['selectedTags'] = $this->model->find(request()->route()->parameter('video'))->
+            tags()->get()->pluck('id')->toArray();
+        }
+        if(request()->route()->parameter('video')){
+            $array['comments'] = $this->model->find(request()->route()->parameter('video'))->
+            comments()->orderby('id','desc')->with('user')->get();
+        }
+        return $array;
+    }
+    protected function syncTagsSkills($rows,$requestArray){
+        if(isset($requestArray['skills'])&& !empty($requestArray['skills'])){
+            $rows->skills()->sync($requestArray['skills']);
+        }
+        if(isset($requestArray['tags'])&& !empty($requestArray['tags'])){
+            $rows->tags()->sync($requestArray['tags']);
+        }
 
+    }
+    protected function with(){
+        return[];
+    }
+    public function createUpload($id){
+        $user = User::findOrFail($id);
+        $append = $this->append();
+        return view('frontend.upload-video.index',compact('user'))->with($append);
+    }
+    public function uploadStore(\App\Http\Requests\FrontEnd\Videos\Store $request){
+        $file=$request->file('image');
+        $fileName=time().Str::random('10').'.'.$file->getClientOriginalExtension();
+        $file->move(public_path('uploads'),$fileName);
+        $requestArray=['user_id'=>auth()->user()->id,'image'=>$fileName]+$request->all();
+        $rows = Video::create($requestArray);
+        $this->syncTagsSkills($rows,$requestArray);
+
+        return redirect()->route('home');
+
+    }
+    public function videoUploadEdit($id){
+
+
+    }
+    public function videoUploadDelete($id){}
 }

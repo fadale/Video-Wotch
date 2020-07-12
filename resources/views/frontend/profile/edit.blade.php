@@ -1,11 +1,12 @@
-<div class="card card-nav-tabs mt-lg-5" style="display: none">
+<div class="card cardedit card-nav-tabs" style="display: none">
     <div class="card-header card-header-success">
         Update User
     </div>
     <div class="card-body">
 
-            <form action="{{route('profile.update',[$user->id])}}" method="post">
+            <form action="{{route('profile.update',[$user->id])}}" method="POST" enctype="multipart/form-data">
                 @csrf
+                @method('POST')
                 <div class="row">
                     @php $input="name"; @endphp
                     <div class="col-md-6">
@@ -46,6 +47,20 @@
                                     </span>
                             @enderror
                         </div>
+                    </div>
+                    @php $input="image"; @endphp
+                    <div class="col-md-6">
+                    <label>User image</label>
+                    <div class="custom-file">
+
+                        <input type="file" class="custom-file-input" name="{{$input}}" id="customFile">
+                        <label class="custom-file-label" for="customFile">Choose image</label>
+                        @error($input)
+                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                        @enderror
+                    </div>
                     </div>
                 </div>
                 <div class="row">

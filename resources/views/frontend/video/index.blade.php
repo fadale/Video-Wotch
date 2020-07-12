@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title',$video->name)
 @section('meta_des',$video->meta_des)
-@section('meta_keywords',$$video->meta_keywords)
+@section('meta_keywords',$video->meta_keyword)
 @section('content')
     <div class="section section-buttons">
         <div class="container">

@@ -44,7 +44,7 @@
           <nav class="float-left">
             <ul>
               <li>
-                <a href="">
+                <a href="{{route('admin.home')}}">
                   Awssal
                 </a>
               </li>

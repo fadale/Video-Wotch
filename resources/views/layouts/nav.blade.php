@@ -55,6 +55,12 @@
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            @if(Auth::user()->group == 'admin')
+                            <a href="{{route('admin.home')}}"class="dropdown-item">Dashboard</a>
+                            @endif
+                                <a href="{{route('front.uploadVideo',[Auth::user()->id])}}"class="dropdown-item">Upload</a>
+
+                                <a href="{{route('front.profile',[Auth::user()->id,slug(Auth::user()->name)])}}"class="dropdown-item">Profile</a>
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -64,7 +70,6 @@
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                 @csrf
                             </form>
-                            <a href="{{route('front.profile',[Auth::user()->id,slug(Auth::user()->name)])}}"class="dropdown-item">Profile</a>
                         </div>
                     </li>
                 @endguest

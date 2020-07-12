@@ -24,7 +24,7 @@ class Store extends FormRequest
     public function rules()
     {
         return [
-            'comment'=>['required','min:10'],
+            'comment'=>['required','min:2'],
             'video_id'=>['required','integer'],
         ];
     }

@@ -12,8 +12,9 @@ class Home extends BackEndController
     }
     public function index(){
         $comments = Comment::with('user','video')->orderBy('id','desc')->paginate(10);
-
-
         return view('backend.home',compact('comments'));
+    }
+    public function frontHome(){
+        return redirect()->route('home');
     }
 }
