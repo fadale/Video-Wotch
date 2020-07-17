@@ -6,7 +6,6 @@
 
             <form action="{{route('profile.update',[$user->id])}}" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('POST')
                 <div class="row">
                     @php $input="name"; @endphp
                     <div class="col-md-6">
@@ -40,7 +39,7 @@
                     <div class="col-md-6">
                         <div class="form-group bmd-form-group">
                             <label class="bmd-label-floating">Password</label>
-                            <input type="password" name="{{$input}}"  class="form-control @error('$input') is-invalid @enderror">
+                            <input type="password" name="{{$input}}" required class=" form-control @error('$input') is-invalid @enderror">
                             @error('$input')
                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -54,7 +53,7 @@
                     <div class="custom-file">
 
                         <input type="file" class="custom-file-input" name="{{$input}}" id="customFile">
-                        <label class="custom-file-label" for="customFile">Choose image</label>
+                        <label class="custom-file-label custom-file" for="customFile">Choose image</label>
                         @error($input)
                         <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

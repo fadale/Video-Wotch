@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\FrontEnd\Videos;
+namespace App\Http\Requests\FrontEnd\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,13 +24,10 @@ class Update extends FormRequest
     public function rules()
     {
         return [
-            'name'=>['required','max:191'],
-            'meta_keyword'=>['max:191'],
-            'meta_des'=>['max:191'],
-            'des'=>['required','max:191'],
-            'youtube'=>['required','min:10','url'],
-            'cat_id'=>['required','integer'],
-            'image'=>['nullable','image'],
+            'name' => ['required', 'string', 'max:191'],
+            'email' => ['required', 'string', 'email', 'max:191'],
+            'password'=>['string'],
+            'image'=>['image']
         ];
     }
 }

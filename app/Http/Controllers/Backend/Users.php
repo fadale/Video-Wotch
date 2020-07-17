@@ -43,7 +43,7 @@ class Users extends BackEndController
 
         $user->update($RequestArray);
 
-        return redirect()->route('users.index',[$user->id]);
+        return redirect()->route('users.index');
 
     }
 }

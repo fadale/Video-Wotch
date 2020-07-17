@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Requests\FrontEnd\Messages\Store;
-
-use App\Http\Requests\FrontEnd\Videos\Update;
+use App\Http\Requests\FrontEnd\Users\Update;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Message;
@@ -14,6 +13,7 @@ use App\Models\Skill;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\Video;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 
@@ -43,6 +43,44 @@ class HomeController extends Controller
         }
         $videos = $videos->paginate(20);
         return view('home',compact('videos'));
+    }
+    public  function  profile($id,$slug=null){
+        $user = User::findOrFail($id);
+        $videos = Video::all()->where('user_id',$id);
+        return view('frontend.profile.index',compact('user','videos'));
+    }
+
+    /**
+     * The profileUpdate Function is not working fixed
+     * @param $id
+     * @param Update $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function profileUpdate($id ,Update $request){
+        $user=User::findOrFail($id);
+        $arry=[];
+        $file=$request->file('image');
+        $fileName=time().Str::random('10').'.'.$file->getClientOriginalExtension();
+        $file->move(public_path('uploads'),$fileName);
+        $requestArray=['user_id'=>auth()->user()->id,'image'=>$fileName]+$request->all();
+        $arry['image']=$requestArray;
+
+        if($request->email != $user->email){
+            $email = User::where('email',$request->email)->first();
+            if ($email == null){
+                $arry['email']=$request->email;
+            }
+        }
+        if($request->name != $user->name){
+            $email = User::where('name',$request->name);
+            $arry['name']=$request->name;
+        }
+        if (!empty($arry)){
+            $user->update($arry);
+        }
+        alert()->message('You Profile have been saved')->autoclose(2000);
+        return redirect()->route('front.profile',[$user->id,slug($user->name)]);
+
     }
     public function category($id)
     {
@@ -108,44 +146,6 @@ class HomeController extends Controller
         $page = Page::findOrFail($id);
         return view('frontend.page.index',compact('page'));
     }
-    public  function  profile($id,$slug=null){
-        $user = User::findOrFail($id);
-        $videos = Video::all()->where('user_id',$id);
-        return view('frontend.profile.index',compact('user','videos'));
-    }
-
-    public function profileUpdate(\App\Http\Requests\FrontEnd\Users\Store $request){
-        dd($request->file('image'));
-        $user=User::findOrFail(auth()->user()->id);
-        $arry=[];
-
-        $file=$request->file('image');
-        $fileName=time().Str::random('10').'.'.$file->getClientOriginalExtension();
-        $file->move(public_path('uploads'),$fileName);
-        $requestArray=['user_id'=>auth()->user()->id,'image'=>$fileName]+$request->all();
-        $arry['image']=$requestArray;
-
-        if($request->email != $user->email){
-            $email = User::where('email',$request->email)->first();
-            if ($email == null){
-                $arry['email']=$request->email;
-            }
-        }
-        if($request->name != $user->name){
-            $email = User::where('name',$request->name);
-                $arry['name']=$request->name;
-        }
-        if($request->password != ''){
-
-            $arry['password']=$request->password;
-        }
-        if (!empty($arry)){
-            $user->update($arry);
-        }
-        alert()->message('You Profile have been saved')->autoclose(2000);
-        return redirect()->route('front.profile',[$user->id,slug($user->name)]);
-
-    }
 
     protected function append()
     {
@@ -199,8 +199,39 @@ class HomeController extends Controller
 
     }
     public function videoUploadEdit($id){
+        $video= Video::findOrFail($id);
+        $append = $this->append();
+        return  view('frontend.upload-video.edit',compact('video'))->with($append);
+    }
 
+    public function videoUploadUpdate($id,\App\Http\Requests\FrontEnd\Videos\Update $request){
+        $requestArray=$request->all();
+
+        if($request->hasFile('image')){
+            $file=$request->file('image');
+            $fileName=time().Str::random('10').'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads'),$fileName);
+            $requestArray=['image'=>$fileName]+$requestArray;
+        }
+        $rows= Video::findOrFail($id);
+        $rows->update($requestArray);
+        $this->syncTagsSkills($rows,$requestArray);
+        $user = auth()->user();
+        $videos = Video::all()->where('user_id',$user->id);
+        return view('frontend.profile.index',compact('user','videos'));
 
     }
-    public function videoUploadDelete($id){}
+    public function videoUploadDelete($id,$slug=null){
+
+        Video::findOrFail($id)->delete();
+        $id= User::where('id',Auth::users()->id);
+        $slug=User::where('name',Auth::users()->name);
+        $modelName=Video::class;
+        if($modelName == 'Video'){
+            $requesat = Comment::where('video_id',$id);
+            $requesat->delete();
+        }
+        return redirect()->route('front.profile',compact('id','slug'));
+
+    }
 }

@@ -25,6 +25,9 @@
                 ID
             </th>
             <th>
+                Avatar
+            </th>
+            <th>
                 Name
             </th>
 
@@ -42,6 +45,7 @@
             @foreach ($rows as $row)
                 <tr>
                     <td>{{$row->id}}</td>
+                    <td><img src="{{url('uploads/'.$row->image)}}" class="w-25 h-25 rounded-circle" alt=""></td>
                     <td>{{$row->name}}</td>
                     <td>{{$row->email}}</td>
                     <td>{{$row->group}}</td>

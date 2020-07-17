@@ -50,9 +50,10 @@ Route::middleware('auth')->group(function() {
     Route::prefix('admin')->get('/','BackEnd\Home@index')->name('admin.home');
     Route::post('comments/{id}', 'HomeController@commentUpdate')->name('front.commentUpdate');
     Route::post('comments/{id}/create', 'HomeController@commentStore')->name('front.commentStore');
-    Route::post('profile', 'HomeController@profileUpdate')->name('profile.update');
+    Route::post('profile/{id}','HomeController@profileUpdate')->name('profile.update');
     Route::get('/upload/{id}','HomeController@createUpload')->name('front.uploadVideo');
     Route::post('/upload','HomeController@uploadStore')->name('frontVideo.store');
     Route::get('/upload/{id}/edit','HomeController@videoUploadEdit')->name('video-upload.edit');
+    Route::post('/upload/{id}/update','HomeController@videoUploadUpdate')->name('frontVideo.Update');
     Route::post('/upload/{id}/delete','HomeController@videoUploadDelete')->name('video-upload.destroy');
 });

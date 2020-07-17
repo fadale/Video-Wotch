@@ -6,12 +6,12 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-4 text-center">
-                     <div class="card card-profile mt-0">
+                     <div class="card card-profile border-dark mt-0 shadow-lg" >
                          <div class="avatar card-header bg-white border-bottom-0">
-                        <img src="/frontend/img/faces/joe-gardner-2.jpg" alt="Circle Image" class="shadow-lg w-50 img-circle img-no-padding img-responsive">
-                    </div>
+                        <img src="{{url('uploads/'.$user->image)}}" alt="Circle Image" class="shadow-lg w-50 h-50 img-circle img-no-padding img-responsive">
+                         </div>
                          <div class="name card-body">
-                        <h4 class="title mt-2 mb-2">{{$user->name}}
+                        <h4 class="title mb-2">{{$user->name}}
                             <br>
                         </h4>
                         <h6 class="description">{{$user->email}}</h6>
@@ -30,6 +30,8 @@
                          @endif
             </div>
         </div>
+        @if(!empty($videos))
         @include('frontend.upload-video.table')
+            @endif
     </div>
 @endsection

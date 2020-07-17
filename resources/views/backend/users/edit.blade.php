@@ -18,6 +18,7 @@
         </div>
 
           <form action="{{route($routeName.'.update',[$row->id])}}" method="POST">
+              @csrf
             {{ method_field('put') }}
            @include('backend.'.$folderName.'.form')
             <button type="submit" class="btn btn-primary pull-right">Update {{$modelName}}</button>

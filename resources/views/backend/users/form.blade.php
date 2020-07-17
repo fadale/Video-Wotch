@@ -49,7 +49,7 @@
         <label class="bmd-label-floating">Published</label>
         <select name="{{$input}}" class="form-control @error($input) is-invalid @enderror">
             <option class="text-dark"
-                    value="admin"{{isset($row)&&$row->{$input}=="admin"?'selected':''}}>Amin</option>
+                    value="admin"{{isset($row)&&$row->{$input}=="admin"?'selected':''}}>Admin</option>
             <option class="text-dark"
                     value="user"{{isset($row)&&$row->{$input}=="user"?'selected':''}}>User</option>
         </select>
