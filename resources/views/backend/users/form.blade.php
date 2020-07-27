@@ -42,21 +42,37 @@
                   @enderror
                 </div>
               </div>
-            </div>
-@php $input="group"; @endphp
-<div class="col-md-6">
-    <div class="form-group bmd-form-group">
-        <label class="bmd-label-floating">Published</label>
-        <select name="{{$input}}" class="form-control @error($input) is-invalid @enderror">
-            <option class="text-dark"
-                    value="admin"{{isset($row)&&$row->{$input}=="admin"?'selected':''}}>Admin</option>
-            <option class="text-dark"
-                    value="user"{{isset($row)&&$row->{$input}=="user"?'selected':''}}>User</option>
-        </select>
-        @error($input)
-        <span class="invalid-feedback" role="alert">
+                @php $input="image"; @endphp
+                <div class="col-md-6">
+                    <label>User image</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="{{$input}}" id="customFile">
+                        <label class="custom-file-label custom-file" for="customFile">Choose image</label>
+                        @error($input)
+                        <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-        @enderror
-    </div>
-</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @php $input="group"; @endphp
+                <div class="col-md-6">
+                    <div class="form-group bmd-form-group">
+                        <label class="bmd-label-floating">Published</label>
+                        <select name="{{$input}}" class="form-control @error($input) is-invalid @enderror">
+                            <option class="text-dark"
+                                    value="admin"{{isset($row)&&$row->{$input}=="admin"?'selected':''}}>Admin</option>
+                            <option class="text-dark"
+                                    value="user"{{isset($row)&&$row->{$input}=="user"?'selected':''}}>User</option>
+                        </select>
+                        @error($input)
+                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+

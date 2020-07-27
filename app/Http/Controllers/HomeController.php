@@ -58,25 +58,27 @@ class HomeController extends Controller
      */
     public function profileUpdate($id ,Update $request){
         $user=User::findOrFail($id);
-        $arry=[];
-        $file=$request->file('image');
-        $fileName=time().Str::random('10').'.'.$file->getClientOriginalExtension();
-        $file->move(public_path('uploads'),$fileName);
-        $requestArray=['user_id'=>auth()->user()->id,'image'=>$fileName]+$request->all();
-        $arry['image']=$requestArray;
+
+        $requestArray=$request->all();
+        if($request->hasFile('image')){
+            $file=$request->file('image');
+            $fileName=time().Str::random('10').'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads'),$fileName);
+            $requestArray=['image'=>$fileName]+$requestArray;
+        }
 
         if($request->email != $user->email){
             $email = User::where('email',$request->email)->first();
             if ($email == null){
-                $arry['email']=$request->email;
+                $requestArray['email']=$request->email;
             }
         }
         if($request->name != $user->name){
             $email = User::where('name',$request->name);
-            $arry['name']=$request->name;
+            $requestArray['name']=$request->name;
         }
-        if (!empty($arry)){
-            $user->update($arry);
+        if (!empty($requestArray)){
+            $user->update($requestArray);
         }
         alert()->message('You Profile have been saved')->autoclose(2000);
         return redirect()->route('front.profile',[$user->id,slug($user->name)]);

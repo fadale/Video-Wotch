@@ -8,7 +8,12 @@
                     <div class="col-md-4 text-center">
                      <div class="card card-profile border-dark mt-0 shadow-lg" >
                          <div class="avatar card-header bg-white border-bottom-0">
-                        <img src="{{url('uploads/'.$user->image)}}" alt="Circle Image" class="shadow-lg w-50 h-50 img-circle img-no-padding img-responsive">
+                             @if(empty($user->image))
+                                 <img src="../frontend/img/default-avatar.png" class="hadow-lg rounded-circle img-no-padding img-responsive" style="max-width: 200px" alt="">
+
+                             @else
+                                 <img src="{{url('uploads/'.$user->image)}}" alt="Circle Image" class="shadow-lg rounded-circle img-no-padding img-responsive" style="max-width: 200px">
+                                @endif
                          </div>
                          <div class="name card-body">
                         <h4 class="title mb-2">{{$user->name}}

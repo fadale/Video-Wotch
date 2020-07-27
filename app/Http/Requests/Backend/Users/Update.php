@@ -27,6 +27,7 @@ class Update extends FormRequest
             'name' => ['required', 'string', 'max:191'],
             'email' => ['required', 'string', 'email', 'max:191', 'unique:users,email,'.$this->user],
             'password' => ['string'],
+            'image'=>['image'],
             'group'=>['required']
         ];
     }

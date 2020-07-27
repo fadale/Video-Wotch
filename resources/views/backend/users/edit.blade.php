@@ -17,13 +17,15 @@
           <p class="card-category">{{$pageDes}}</p>
         </div>
 
-          <form action="{{route($routeName.'.update',[$row->id])}}" method="POST">
+          <div class="card-body">
+          <form action="{{route($routeName.'.update',[$row->id])}}" method="POST" enctype="multipart/form-data">
               @csrf
             {{ method_field('put') }}
            @include('backend.'.$folderName.'.form')
             <button type="submit" class="btn btn-primary pull-right">Update {{$modelName}}</button>
             <div class="clearfix"></div>
           </form>
+          </div>
 
       </div>
     </div>

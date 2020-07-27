@@ -45,7 +45,14 @@
             @foreach ($rows as $row)
                 <tr>
                     <td>{{$row->id}}</td>
-                    <td><img src="{{url('uploads/'.$row->image)}}" class="w-25 h-25 rounded-circle" alt=""></td>
+                    <td>
+                        @if(empty($row->image))
+                            <img src="../frontend/img/default-avatar.png" class="rounded-circle" style="max-width: 100px" alt="">
+
+                        @else
+                        <img src="{{url('uploads/'.$row->image)}}" class="rounded-circle" style="max-width: 100px" alt="">
+                        @endif
+                    </td>
                     <td>{{$row->name}}</td>
                     <td>{{$row->email}}</td>
                     <td>{{$row->group}}</td>
